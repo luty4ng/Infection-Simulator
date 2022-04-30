@@ -6,8 +6,13 @@ public class Factory : BuildingHelper
     {
         get
         {
-            return 45;
+            return 12;
         }
+    }
+
+    public override void OnStart()
+    {
+        defaultStayTime = 20f;
     }
     public override void OnAgentTick(AgentData agentData)
     {

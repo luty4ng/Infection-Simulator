@@ -85,6 +85,7 @@ MonoBehaviour:
   indicatorPrototype: {fileID: 1563304276930678537}
   buildingType: 0
   helper: {fileID: 0}
+  pivot: {x: 0, y: 0}
 --- !u!1 &4786809093388670148
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,7 +179,7 @@ BoxCollider2D:
   m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -207,7 +208,7 @@ GameObject:
   - component: {fileID: 2289138914536412400}
   m_Layer: 8
   m_Name: Input
-  m_TagString: Untagged
+  m_TagString: Building
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

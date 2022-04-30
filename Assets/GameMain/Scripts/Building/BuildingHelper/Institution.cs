@@ -6,8 +6,12 @@ public class Institution : BuildingHelper
     {
         get
         {
-            return 12;
+            return 6;
         }
+    }
+    public override void OnStart()
+    {
+        defaultStayTime = 20f;
     }
     public override void OnAgentTick(AgentData agentData)
     {

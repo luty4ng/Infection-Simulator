@@ -59,6 +59,7 @@ public class Building : MonoBehaviour
                 GameCenter.current.RegisterUnwalkable(new Vector2Int(X + x - pivot.x, Y + y - pivot.y));
             }
         }
+        GameCenter.current.RegisterBuilding(buildingType, this);
     }
 
     private void OnDestroy()

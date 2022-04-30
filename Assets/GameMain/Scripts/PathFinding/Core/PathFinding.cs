@@ -111,17 +111,17 @@ namespace PathFind
                 if (currentNode == endNode)
                 {
                     stopwatch.Start();
-                    Debug.Log("Path Found in " + stopwatch.ElapsedMilliseconds + " ms.");
+                    // Debug.Log("Path Found in " + stopwatch.ElapsedMilliseconds + " ms.");
                     isSuccess = true;
                     path = CalculatePath(endNode);
                     return;
                 }
                 // openSet.Remove(currentNode);
+                Debug.Log(new Vector2(currentNode.x, currentNode.y));
                 closeSet.Add(currentNode);
-
                 foreach (var neighbourNode in currentNode.GetNeighbours())
                 {
-                    if (closeSet.Contains(neighbourNode) || !neighbourNode.isWalkable)
+                    if (closeSet.Contains(neighbourNode) || neighbourNode == null || !neighbourNode.isWalkable)
                         continue;
                     int gCost = currentNode.gCost + CalculateDisCost(currentNode, neighbourNode);
                     if (gCost < neighbourNode.gCost)

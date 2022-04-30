@@ -2,13 +2,16 @@ using UnityEngine;
 
 public class House : BuildingHelper
 {
-    public float defaultStayTime;
     public override int Capacity
     {
         get
         {
             return 9;
         }
+    }
+    public override void OnStart()
+    {
+        defaultStayTime = 20f;
     }
 
     [Range(0f, 1f)] public float hungerDecreaseSpeedMultipier = 0.8f;

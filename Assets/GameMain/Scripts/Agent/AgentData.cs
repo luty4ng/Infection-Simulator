@@ -5,13 +5,21 @@ public enum AgentIdentity
     Citizen,
     Doctor,
     Officer,
-    Courier
+    Worker
 }
 public enum InfectionType
 {
     Unidentified,
     Infected,
     Recovered
+}
+
+public enum Symptom
+{
+    None,
+    Mild,
+    Moderate,
+    Severe
 }
 [System.Serializable]
 public class AgentData
@@ -22,16 +30,20 @@ public class AgentData
     [Range(0, 100)] public float hunger;
     [Range(0, 100)] public float mood;
     [Range(0.5f, 1.5f)] public float speedFactor;
-    [Range(0.1f, 5)] public float hungerDecreaseSpeed;
+    [Range(0.5f, 4f)] public float hungerDecreaseSpeed;
+    [Range(0.2f, 2f)] public float moodIncreaseSpeed;
     public AgentIdentity identity;
     public InfectionType infectionType;
+    public Symptom symptom;
     public BuildingHelperType targetBuildingType;
+    public bool isTargetAgent = false;
     public VirusData virusData;
     public float stayTime = 3f;
-    public float textTime = 0f;
+    public float countTime = 0f;
     Building currentBuilding;
 
-    public AgentData(AgentAI entity, float health = 70, float hunger = 70, float mood = 70, float speedFactor = 1f, float hungerDecreaseSpeed = 1)
+
+    public AgentData(AgentAI entity, float health = 70, float hunger = 70, float mood = 50, float speedFactor = 1f, float hungerDecreaseSpeed = 1f)
     {
         this.agentId = Utilities.GetRandomID();
         this.health = health;
@@ -42,13 +54,14 @@ public class AgentData
         this.hungerDecreaseSpeed = hungerDecreaseSpeed;
         this.identity = AgentIdentity.Citizen;
         this.infectionType = InfectionType.Unidentified;
+        this.symptom = Symptom.None;
         this.virusData = new VirusData();
     }
 
     public void OnEnterBuilding(Building building)
     {
         // Debug.Log("Agent Enter Building");
-        textTime = 0f;
+        countTime = 0f;
         currentBuilding = building;
         currentBuilding.helper.OnAgentEnter(this);
     }
@@ -66,16 +79,22 @@ public class AgentData
         {
             // Debug.Log("Agent in Building");
             currentBuilding.helper.OnAgentTick(this);
-            textTime += Time.deltaTime;
-            if (textTime >= stayTime)
+            countTime += Time.deltaTime;
+            if (countTime >= currentBuilding.helper.defaultStayTime)
             {
                 currentBuilding.RemoveAgent(this);
             }
         }
     }
 
-    public void OnBuilding()
+    public void OnUpdate()
     {
+        hunger -= hungerDecreaseSpeed * Time.deltaTime;
+        mood += moodIncreaseSpeed * Time.deltaTime;
+    }
 
+    public bool CheckCrazy()
+    {
+        return false;
     }
 }

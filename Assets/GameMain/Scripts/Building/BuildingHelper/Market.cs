@@ -6,8 +6,12 @@ public class Market : BuildingHelper
     {
         get
         {
-            return 24;
+            return 9;
         }
+    }
+    public override void OnStart()
+    {
+        defaultStayTime = 20f;
     }
     public override void OnAgentTick(AgentData agentData)
     {
@@ -23,4 +27,5 @@ public class Market : BuildingHelper
     {
 
     }
+
 }

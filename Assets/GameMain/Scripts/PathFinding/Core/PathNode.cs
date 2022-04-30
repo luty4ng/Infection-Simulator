@@ -70,6 +70,8 @@ namespace PathFind
                         neighbours.Add(grid.GetValue(X, Y));
                 }
             }
+
+            Debug.Log(neighbours.Count);
             return neighbours;
         }
     }

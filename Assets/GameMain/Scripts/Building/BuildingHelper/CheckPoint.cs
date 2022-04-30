@@ -2,12 +2,17 @@ using UnityEngine;
 
 public class CheckPoint : BuildingHelper
 {
-        public override int Capacity
+    public override int Capacity
     {
         get
         {
             return 4;
         }
+    }
+
+    public override void OnStart()
+    {
+        defaultStayTime = 20f;
     }
     public override void OnAgentTick(AgentData agentData)
     {
@@ -16,11 +21,11 @@ public class CheckPoint : BuildingHelper
 
     public override void OnAgentEnter(AgentData agentData)
     {
-        
+
     }
-    
+
     public override void OnAgentExit(AgentData agentData)
     {
-        
+
     }
 }
