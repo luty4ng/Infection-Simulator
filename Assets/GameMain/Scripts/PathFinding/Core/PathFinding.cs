@@ -117,7 +117,7 @@ namespace PathFind
                     return;
                 }
                 // openSet.Remove(currentNode);
-                Debug.Log(new Vector2(currentNode.x, currentNode.y));
+                // Debug.Log(new Vector2(currentNode.x, currentNode.y));
                 closeSet.Add(currentNode);
                 foreach (var neighbourNode in currentNode.GetNeighbours())
                 {

@@ -1,12 +1,5 @@
 using UnityEngine;
 
-public enum AgentIdentity
-{
-    Citizen,
-    Doctor,
-    Officer,
-    Worker
-}
 public enum InfectionType
 {
     Unidentified,
@@ -26,33 +19,31 @@ public class AgentData
 {
     public readonly string agentId;
     public readonly AgentAI entity;
-    [Range(0, 100)] public float health;
+    public float money;
     [Range(0, 100)] public float hunger;
     [Range(0, 100)] public float mood;
     [Range(0.5f, 1.5f)] public float speedFactor;
     [Range(0.5f, 4f)] public float hungerDecreaseSpeed;
-    [Range(0.2f, 2f)] public float moodIncreaseSpeed;
-    public AgentIdentity identity;
+    [Range(0.2f, 2f)] public float moodDecreaseSpeed;
     public InfectionType infectionType;
     public Symptom symptom;
     public BuildingHelperType targetBuildingType;
-    public bool isTargetAgent = false;
     public VirusData virusData;
-    public float stayTime = 3f;
     public float countTime = 0f;
+    private float checkCrazyTime = 0f;
     Building currentBuilding;
 
 
-    public AgentData(AgentAI entity, float health = 70, float hunger = 70, float mood = 50, float speedFactor = 1f, float hungerDecreaseSpeed = 1f)
+    public AgentData(AgentAI entity, float money = 400, float hunger = 70, float mood = 50, float speedFactor = 1f, float hungerDecreaseSpeed = 1f, float moodDecreaseSpeed = 0.5f)
     {
         this.agentId = Utilities.GetRandomID();
-        this.health = health;
         this.entity = entity;
+        this.money = money;
         this.hunger = hunger;
         this.mood = mood;
         this.speedFactor = speedFactor;
         this.hungerDecreaseSpeed = hungerDecreaseSpeed;
-        this.identity = AgentIdentity.Citizen;
+        this.moodDecreaseSpeed = moodDecreaseSpeed;
         this.infectionType = InfectionType.Unidentified;
         this.symptom = Symptom.None;
         this.virusData = new VirusData();
@@ -87,14 +78,23 @@ public class AgentData
         }
     }
 
-    public void OnUpdate()
+    public void OnStayScene()
     {
         hunger -= hungerDecreaseSpeed * Time.deltaTime;
-        mood += moodIncreaseSpeed * Time.deltaTime;
+        mood -= moodDecreaseSpeed * Time.deltaTime;
     }
 
     public bool CheckCrazy()
     {
+        checkCrazyTime += Time.deltaTime;
+        if (checkCrazyTime >= 2f)
+        {
+            checkCrazyTime = 0f;
+            if (mood <= 20 || hunger <= 20)
+            {
+                return Random.Range(0f, 1f) > 0.5f ? true : false;
+            }
+        }
         return false;
     }
 }

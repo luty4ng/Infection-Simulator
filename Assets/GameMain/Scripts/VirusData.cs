@@ -2,7 +2,7 @@ using UnityEngine;
 [System.Serializable]
 public class VirusData
 {
-
+    [Range(0f, 100f)] public float InfectedValue;
     [Range(0f, 1f)] public float spreadRate;
     [Range(0f, 1f)] public float deadRate;
     [Range(0.5f, 1.5f)] public float spreadRangeMultipier;
@@ -11,6 +11,7 @@ public class VirusData
 
     public VirusData()
     {
+        this.InfectedValue = 0;
         this.spreadRate = 0.2f;
         this.deadRate = 0f;
         this.spreadRangeMultipier = 1f;

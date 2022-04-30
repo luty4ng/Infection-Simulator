@@ -7,7 +7,7 @@ public enum BuildingHelperType
     Hospital,
     Factory,
     Store,
-    Institution,
+    Disneyland,
     CheckPoint,
     House
 }
@@ -35,7 +35,7 @@ public class Building : MonoBehaviour
             helper = gameObject.AddComponent<Factory>();
         else if (buildingType == BuildingHelperType.Store)
             helper = gameObject.AddComponent<Market>();
-        else if (buildingType == BuildingHelperType.Institution)
+        else if (buildingType == BuildingHelperType.Disneyland)
             helper = gameObject.AddComponent<Institution>();
         else if (buildingType == BuildingHelperType.CheckPoint)
             helper = gameObject.AddComponent<CheckPoint>();
@@ -80,6 +80,7 @@ public class Building : MonoBehaviour
         BuildingIndicator indicator = GameObject.Instantiate(indicatorPrototype, parent: canvas.transform).GetComponent<BuildingIndicator>();
         indicator.Register(this, agent.agentData);
         indicator.gameObject.SetActive(true);
+        agent.ResetState();
         agents.Add(agent.agentData, indicator);
         agent.gameObject.SetActive(false);
     }

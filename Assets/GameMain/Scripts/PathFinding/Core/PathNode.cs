@@ -71,7 +71,6 @@ namespace PathFind
                 }
             }
 
-            Debug.Log(neighbours.Count);
             return neighbours;
         }
     }

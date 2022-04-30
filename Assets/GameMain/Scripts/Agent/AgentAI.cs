@@ -18,12 +18,15 @@ public class AgentAI : MonoBehaviour
     public LayerMask detectLayers;
     public Transform targetTrans;
     public bool isInfected = false;
+    public bool isDeside = false;
     public AgentData agentData;
     [SerializeField] private List<Vector3> waypoints = new List<Vector3>();
     private Transform lastTarget;
     private int waypointIndex;
     private StateMachine stateMachine;
     private bool isStart = false;
+    private AgentDeside deside;
+
     private void Start()
     {
         isStart = true;
@@ -31,32 +34,22 @@ public class AgentAI : MonoBehaviour
         agentData = new AgentData(this);
         stateMachine = new StateMachine();
 
+        deside = new AgentDeside(this);
         AgentRoaming roaming = new AgentRoaming(this);
-        AgentGoHospital toHospital = new AgentGoHospital(this);
-        AgentGoCheck toCheckPoint = new AgentGoCheck(this);
-        AgentGoWork toWork = new AgentGoWork(this);
-        AgentGoEducate toInstitution = new AgentGoEducate(this);
-        AgentGoHome toHome = new AgentGoHome(this);
-        AgentGoCrazy goCrazy = new AgentGoCrazy(this);
-        AgentGoAgent goAgent = new AgentGoAgent(this);
+        AgentGoBuilding goBuilding = new AgentGoBuilding(this);
+        AgentCrazy crazy = new AgentCrazy(this);
 
-        System.Func<bool> GoToHospital() => () => agentData.targetBuildingType == BuildingHelperType.Hospital;
-        System.Func<bool> GoToInstitution() => () => agentData.targetBuildingType == BuildingHelperType.Institution;
-        System.Func<bool> GoToHome() => () => agentData.targetBuildingType == BuildingHelperType.House;
-        System.Func<bool> GoToCheckPoint() => () => agentData.targetBuildingType == BuildingHelperType.CheckPoint;
-        System.Func<bool> GoToFactory() => () => agentData.targetBuildingType == BuildingHelperType.Factory;
-        System.Func<bool> GoToAgent() => () => agentData.isTargetAgent;
-        System.Func<bool> GoToCrazy() => () => agentData.CheckCrazy();
-        System.Func<bool> HasNoTarget() => () => targetTrans == null || (agentData.targetBuildingType == BuildingHelperType.None && !agentData.isTargetAgent);
+        System.Func<bool> GoToBuiding() => () => agentData.targetBuildingType != BuildingHelperType.None;
+        System.Func<bool> HasNoTarget() => () => agentData.targetBuildingType == BuildingHelperType.None;
+        System.Func<bool> Deside() => () => isDeside;
+        System.Func<bool> CheckCrazy() => () => agentData.CheckCrazy();
 
-        stateMachine.AddAnyTransition(toHospital, GoToHospital());
-        stateMachine.AddAnyTransition(toCheckPoint, GoToCheckPoint());
-        stateMachine.AddAnyTransition(toWork, GoToFactory());
-        stateMachine.AddAnyTransition(toInstitution, GoToInstitution());
-        stateMachine.AddAnyTransition(toHome, GoToHome());
-        stateMachine.AddAnyTransition(goCrazy, GoToCrazy());
-        stateMachine.AddAnyTransition(goAgent, GoToAgent());
-        stateMachine.AddAnyTransition(roaming, HasNoTarget());
+        stateMachine.AddTransition(deside, goBuilding, GoToBuiding());
+        stateMachine.AddTransition(roaming, deside, Deside());
+        stateMachine.AddTransition(goBuilding, roaming, HasNoTarget());
+        stateMachine.AddTransition(deside, roaming, HasNoTarget());
+        stateMachine.AddTransition(crazy, roaming, HasNoTarget());
+        stateMachine.AddAnyTransition(crazy, CheckCrazy());
         stateMachine.SetState(roaming);
 
 
@@ -76,48 +69,16 @@ public class AgentAI : MonoBehaviour
     {
         stateMachine.Update();
         currentState = stateMachine.GetCurrentState().ToString();
+        agentData.OnStayScene();
         // Collider2D coll = Physics2D.OverlapCircle(this.transform.position, detectRadius, detectLayers);
         // if (coll)
         // {
 
         // }
-        if (agentData.infectionType == InfectionType.Infected)
-        {
-            agentData.targetBuildingType = Random.Range(0f, 1f) >= 0.5f ? BuildingHelperType.House : BuildingHelperType.Hospital;
-        }
-        else if (agentData.infectionType == InfectionType.Unidentified)
-        {
-            agentData.targetBuildingType = Random.Range(0f, 1f) >= 0.5f ? BuildingHelperType.CheckPoint : BuildingHelperType.Hospital;
-        }
-
-
-        if (GameCenter.current.IsMorning)
-        {
-            if (agentData.identity == AgentIdentity.Citizen)
-            {
-                agentData.targetBuildingType = Random.Range(0f, 1f) >= 0.5f ? BuildingHelperType.Institution : BuildingHelperType.None;
-            }
-            else if (agentData.identity == AgentIdentity.Doctor)
-            {
-
-            }
-            else if (agentData.identity == AgentIdentity.Officer)
-            {
-
-            }
-            else if (agentData.identity == AgentIdentity.Worker)
-            {
-
-            }
-        }
-
 
     }
 
-    private void ChangeDecision()
-    {
-        
-    }
+    public void ResetState() => stateMachine.SetState(deside);
 
     public void OnPathFound(List<Vector3> newPath, bool pathSuccessful)
     {

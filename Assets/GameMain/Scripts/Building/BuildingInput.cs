@@ -19,7 +19,8 @@ public class BuildingInput : MonoBehaviour
             AgentAI agentAI = other.gameObject.GetComponent<AgentAI>();
             if (agentAI.targetTrans == building.buildingInput.transform)
             {
-                building.RegisterAgent(agentAI);
+                if(!building.helper.IsFull)
+                    building.RegisterAgent(agentAI);
             }
         }
     }

@@ -12,22 +12,32 @@ public class AgentRoaming : IState
     private AgentData agentData;
     private System.Random random = new System.Random(1000);
     private float pauseTime;
-    private float timer;
+    public float desideTime;
+    private float pauseCountTime;
+    private float desideCountTime;
     public AgentRoaming(AgentAI agentAI)
     {
         this.controller = agentAI;
         this.agentData = controller.agentData;
         this.pauseTime = Random.Range(0.5f, 2f);
-        this.timer = 0;
+        this.desideTime = Random.Range(4f, 6f);
+        this.pauseCountTime = 0;
     }
     public void Update()
     {
-        timer += Time.deltaTime;
-        if (timer >= pauseTime)
+        pauseCountTime += Time.deltaTime;
+        desideCountTime += Time.deltaTime;
+        if (pauseCountTime >= pauseTime)
         {
-            timer = 0;
+            pauseCountTime = 0;
             Vector2 targetPos = (Vector2)controller.transform.position + GetCirclePoint(controller.roamingRadius);
             PathFindingManager.current.RequestPath(controller.transform.position, targetPos, controller.OnPathFound);
+        }
+
+        if (desideCountTime >= desideTime)
+        {
+            desideCountTime = 0;
+            controller.isDeside = true;
         }
     }
     public void OnEnter()
