@@ -86,7 +86,7 @@ public class AgentAI : MonoBehaviour
         {
             waypoints = newPath;
             waypointIndex = 0;
-            if (this.gameObject.activeInHierarchy)
+            if (this != null && this.gameObject.activeInHierarchy)
             {
                 StopCoroutine("FollowPath");
                 StartCoroutine("FollowPath");

@@ -79,12 +79,12 @@ public class GameCenter : MonoSingletonBase<GameCenter>
             currentDay++;
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha0))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             CreateInfectedAgent();
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             CreateHealthyAgent();
         }
