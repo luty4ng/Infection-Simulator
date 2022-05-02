@@ -27,7 +27,7 @@ public class AgentCrazy : IState
         countTime += Time.deltaTime;
         if (countTime >= stayTime)
         {
-            controller.isRoaming = true;
+            agentData.targetBuildingType = BuildingHelperType.None;
         }
 
         pauseCountTime += Time.deltaTime;
@@ -40,7 +40,7 @@ public class AgentCrazy : IState
     }
     public void OnEnter()
     {
-
+        controller.targetTrans = null;
     }
     public void OnExit()
     {

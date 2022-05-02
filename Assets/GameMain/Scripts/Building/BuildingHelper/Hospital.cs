@@ -37,5 +37,6 @@ public class Hospital : BuildingHelper
         {
             agentData.infectionType = InfectionType.Unidentified;
         }
+        agentData.virusData.symptom = Symptom.Mild;
     }
 }

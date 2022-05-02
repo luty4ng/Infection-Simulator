@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using DG.Tweening;
 using PathFind;
 using Fsm;
-using System.Linq;
 
 public class AgentAI : MonoBehaviour
 {
@@ -18,15 +17,14 @@ public class AgentAI : MonoBehaviour
     public Transform targetTrans;
     public SpriteRenderer spriteRenderer;
     public bool isInfected = false;
+    public bool isDeside = false;
     public AgentData agentData;
-    private List<Vector3> waypoints = new List<Vector3>();
+    [SerializeField] private List<Vector3> waypoints = new List<Vector3>();
     private Transform lastTarget;
     private int waypointIndex;
     private StateMachine stateMachine;
     private bool isStart = false;
-    public bool isRoaming = false;
-    public bool isGoBuilding = false;
-    private AgentRoaming roaming;
+    private AgentDeside deside;
 
     private void Start()
     {
@@ -35,16 +33,21 @@ public class AgentAI : MonoBehaviour
         stateMachine = new StateMachine();
         agentData = new AgentData(this, isInfected ? 80 : 0);
 
-        roaming = new AgentRoaming(this);
+        deside = new AgentDeside(this);
+        AgentRoaming roaming = new AgentRoaming(this);
         AgentGoBuilding goBuilding = new AgentGoBuilding(this);
         AgentCrazy crazy = new AgentCrazy(this);
 
-        System.Func<bool> GoToBuiding() => () => isGoBuilding;
-        System.Func<bool> GoToRoaming() => () => isRoaming;
+        System.Func<bool> GoToBuiding() => () => agentData.targetBuildingType != BuildingHelperType.None;
+        System.Func<bool> HasNoTarget() => () => agentData.targetBuildingType == BuildingHelperType.None;
+        System.Func<bool> Deside() => () => isDeside;
         System.Func<bool> CheckCrazy() => () => agentData.CheckCrazy();
 
-        stateMachine.AddTransition(roaming, goBuilding, GoToBuiding());
-        stateMachine.AddTransition(goBuilding, roaming, GoToRoaming());
+        stateMachine.AddTransition(deside, goBuilding, GoToBuiding());
+        stateMachine.AddTransition(roaming, deside, Deside());
+        stateMachine.AddTransition(goBuilding, roaming, HasNoTarget());
+        stateMachine.AddTransition(deside, roaming, HasNoTarget());
+        stateMachine.AddTransition(crazy, roaming, HasNoTarget());
         stateMachine.AddAnyTransition(crazy, CheckCrazy());
         stateMachine.SetState(roaming);
     }
@@ -75,7 +78,7 @@ public class AgentAI : MonoBehaviour
         spriteRenderer.color = GetUpdatedColor();
     }
 
-    public void ResetState() => stateMachine.SetState(roaming);
+    public void ResetState() => stateMachine.SetState(deside);
 
     public void OnPathFound(List<Vector3> newPath, bool pathSuccessful)
     {
@@ -83,8 +86,12 @@ public class AgentAI : MonoBehaviour
         {
             waypoints = newPath;
             waypointIndex = 0;
-            StopCoroutine("FollowPath");
-            StartCoroutine("FollowPath");
+            if (this.gameObject.activeInHierarchy)
+            {
+                StopCoroutine("FollowPath");
+                StartCoroutine("FollowPath");
+            }
+
         }
     }
 

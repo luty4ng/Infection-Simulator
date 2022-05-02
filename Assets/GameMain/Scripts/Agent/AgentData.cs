@@ -1,6 +1,5 @@
 using UnityEngine;
 using GameKit;
-using System.Collections.Generic;
 
 public enum InfectionType
 {
@@ -22,7 +21,7 @@ public class AgentData
     [Range(0.5f, 4f)] public float hungerDecreaseSpeed;
     [Range(0.2f, 2f)] public float moodDecreaseSpeed;
     public InfectionType infectionType;
-    public List<BuildingHelperType> targetBuildingType;
+    public BuildingHelperType targetBuildingType;
     public VirusData virusData;
     private float buildingCountTime = 0f;
     private float crazyCountTime = 0f;
@@ -43,7 +42,6 @@ public class AgentData
         this.moodDecreaseSpeed = moodDecreaseSpeed;
         this.infectionType = InfectionType.Unidentified;
         this.virusData = new VirusData(infectedValue);
-        this.targetBuildingType = new List<BuildingHelperType>();
     }
 
     public void OnEnterBuilding(Building building)
