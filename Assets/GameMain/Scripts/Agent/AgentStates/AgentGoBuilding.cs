@@ -22,11 +22,11 @@ public class AgentGoBuilding : IState
     }
     public void Update()
     {
-        Building tmpBuilding = GetCurrentBuilding();
-        if (currentBuilding != tmpBuilding)
-        {
-            controller.isRoaming = true;
-        }
+        // Building tmpBuilding = GetCurrentBuilding();
+        // if (currentBuilding != tmpBuilding)
+        // {
+        //     controller.isRoaming = true;
+        // }
 
     }
     public void OnEnter()

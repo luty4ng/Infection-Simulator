@@ -13,22 +13,37 @@ public class AgentRoaming : IState
     private System.Random random = new System.Random(1000);
     private float pauseTime;
     private float pauseCountTime;
+    private float desideCountTime;
+    public float desideTime;
     public AgentRoaming(AgentAI agentAI)
     {
         this.controller = agentAI;
         this.agentData = controller.agentData;
         this.pauseTime = Random.Range(0.5f, 2f);
+        this.desideTime = Random.Range(3f, 5f);
+        this.desideCountTime = 0;
         this.pauseCountTime = 0;
     }
     public void Update()
     {
         pauseCountTime += Time.deltaTime;
+        desideCountTime += Time.deltaTime;
         if (pauseCountTime >= pauseTime)
         {
             pauseCountTime = 0;
+            this.pauseTime = Random.Range(0.5f, 2f);
             Vector2 targetPos = (Vector2)controller.transform.position + GetCirclePoint(controller.roamingRadius);
             PathFindingManager.current.RequestPath(controller.transform.position, targetPos, controller.OnPathFound);
         }
+
+        if (desideCountTime > desideTime)
+        {
+            desideCountTime = 0;
+            this.desideTime = Random.Range(3f, 5f);
+            controller.isGoBuilding = true;
+            Debug.Log("GO TO BUILDING");
+        }
+
 
     }
     public void OnEnter()
@@ -69,7 +84,7 @@ public class AgentRoaming : IState
                 agentData.targetBuildingType.Add(BuildingHelperType.Factory);
         }
         agentData.targetBuildingType.Add(BuildingHelperType.None);
-        controller.isGoBuilding = true;
+
     }
     public void OnExit()
     {
