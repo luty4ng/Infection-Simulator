@@ -72,7 +72,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 3a0a38ee3dc456c42b6d84cbfdfb67e1, type: 3}
-  m_Color: {r: 0.21568629, g: 0.85098046, b: 1, a: 1}
+  m_Color: {r: 0.21568629, g: 0.85098046, b: 0.54901963, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -151,32 +151,26 @@ MonoBehaviour:
   currentState: 
   speed: 8
   detectRadius: 4
-  infectRadius: 3
   roamingRadius: 2
   detectLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   targetTrans: {fileID: 0}
+  spriteRenderer: {fileID: 6265889597657673539}
   isInfected: 0
+  isDeside: 0
   agentData:
-    health: 0
+    money: 0
     hunger: 0
     mood: 0
     speedFactor: 0
     hungerDecreaseSpeed: 0
-    identity: 0
+    moodDecreaseSpeed: 0
     infectionType: 0
     targetBuildingType: 0
     virusData:
+      InfectedValue: 0
       symptom: 0
-      spreadRate: 0
-      deadRate: 0
-      spreadRangeMultipier: 0
-      spreadCycleMultipier: 0
-      VariationCycleMultipier: 0
-      symptomCycleMultipier: 0
-    stayTime: 0
-    textTime: 0
   waypoints: []
 --- !u!50 &-3832861176322232907
 Rigidbody2D:

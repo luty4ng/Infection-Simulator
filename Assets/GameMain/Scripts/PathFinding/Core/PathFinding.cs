@@ -51,22 +51,23 @@ namespace PathFind
         {
             grid.GetXY(startPos, out int startX, out int startY);
             grid.GetXY(endPos, out int endX, out int endY);
+            UnityEngine.Profiling.Profiler.BeginSample("FindPath");
             FindPath(startX, startY, endX, endY, out List<PathNode> outPath, out bool outSuccess);
+            UnityEngine.Profiling.Profiler.EndSample();
             path = outPath;
             isSuccess = outSuccess;
         }
 
-        public List<Vector3> FindWayPoints(Vector3 startPos, Vector3 endPos, out bool success)
+        public void FindWayPoints(Vector3 startPos, Vector3 endPos, out List<Vector3> waypoints, out bool success)
         {
             FindPath(startPos, endPos, out List<PathNode> path, out bool isSuccess);
             success = isSuccess;
-            List<Vector3> waypoints = new List<Vector3>();
+            waypoints = new List<Vector3>();
             if (path != null)
             {
                 waypoints = SimplifyPath(path);
                 waypoints.Add(endPos);
             }
-            return waypoints;
         }
 
         public Vector3 FindNextPos(Vector3 startPos, Vector3 endPos)
@@ -104,10 +105,10 @@ namespace PathFind
             startNode.gCost = 0;
             startNode.hCost = CalculateDisCost(startNode, endNode);
 
+
             while (openSet.Count > 0)
             {
                 PathNode currentNode = openSet.RemoveFirst();
-
                 if (currentNode == endNode)
                 {
                     stopwatch.Start();
@@ -119,6 +120,7 @@ namespace PathFind
                 // openSet.Remove(currentNode);
                 // Debug.Log(new Vector2(currentNode.x, currentNode.y));
                 closeSet.Add(currentNode);
+
                 foreach (var neighbourNode in currentNode.GetNeighbours())
                 {
                     if (closeSet.Contains(neighbourNode) || neighbourNode == null || !neighbourNode.isWalkable)
@@ -134,7 +136,9 @@ namespace PathFind
                             openSet.Add(neighbourNode);
                     }
                 }
+
             }
+
             path = null;
             isSuccess = false;
         }
@@ -179,10 +183,16 @@ namespace PathFind
         // Calculate the heuristic cost by manhattan distance.
         private int CalculateDisCost(PathNode nodeA, PathNode nodeB)
         {
-            int xDis = Mathf.Abs(nodeA.x - nodeB.x);
-            int yDis = Mathf.Abs(nodeA.y - nodeB.y);
-            int substract = Mathf.Abs(xDis - yDis);
-            return UNIT_DIAGONAL_COST * Mathf.Min(xDis, yDis) + UNIT_STRAIGHT_COST * substract;
+            // int xDis = Mathf.Abs(nodeA.x - nodeB.x);
+            // int yDis = Mathf.Abs(nodeA.y - nodeB.y);
+            // int substract = Mathf.Abs(xDis - yDis);
+            // return UNIT_DIAGONAL_COST * Mathf.Min(xDis, yDis) + UNIT_STRAIGHT_COST * substract;
+            int dstX = Mathf.Abs(nodeA.x - nodeB.x);
+            int dstY = Mathf.Abs(nodeA.y - nodeB.y);
+
+            if (dstX > dstY)
+                return 14 * dstY + 10 * (dstX - dstY);
+            return 14 * dstX + 10 * (dstY - dstX);
         }
 
         private PathNode GetLoswestFCostNode(List<PathNode> nodeList)

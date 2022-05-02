@@ -11,39 +11,71 @@ public class AgentGoBuilding : IState
 {
     public AgentAI controller;
     private AgentData agentData;
-    private List<Building> targetBuildings;
     private Building currentBuilding;
+    private List<Building> buildingList;
 
     public AgentGoBuilding(AgentAI agentAI)
     {
         this.controller = agentAI;
         this.agentData = controller.agentData;
-        this.targetBuildings = new List<Building>();
+        this.buildingList = new List<Building>();
     }
     public void Update()
     {
-        float distance = (controller.transform.position - controller.targetTrans.position).magnitude;
-        if (distance <= 0.001f)
+        Building tmpBuilding = GetCurrentBuilding();
+        if (currentBuilding != tmpBuilding)
         {
-            Debug.Log("Guess it's full.");
-            targetBuildings.Remove(currentBuilding);
-            currentBuilding = targetBuildings.FirstOrDefault();
-            controller.targetTrans = currentBuilding.buildingInput.transform;
-            PathFindingManager.current.RequestPath(controller.transform.position, controller.targetTrans.position, controller.OnPathFound);
+            controller.isRoaming = true;
         }
+
     }
     public void OnEnter()
     {
-        targetBuildings = GameCenter.current.buildings[agentData.targetBuildingType];
-        currentBuilding = targetBuildings.FirstOrDefault();
-        
+        controller.isGoBuilding = false;
+        foreach (var buildingType in agentData.targetBuildingType)
+        {
+            if (GameCenter.current.buildings[buildingType].Count == 0)
+            {
+                if (buildingType == BuildingHelperType.None)
+                    buildingList.Add(null);
+                continue;
+            }
+
+            foreach (var building in GameCenter.current.buildings[buildingType])
+            {
+                buildingList.Add(building);
+            }
+        }
+
+
+        currentBuilding = GetCurrentBuilding();
+
+        if (currentBuilding == null)
+        {
+            controller.isRoaming = true;
+            return;
+        }
+
+
         controller.targetTrans = currentBuilding.buildingInput.transform;
         PathFindingManager.current.RequestPath(controller.transform.position, controller.targetTrans.position, controller.OnPathFound);
-        Debug.Log(controller.targetTrans.position);
     }
     public void OnExit()
     {
 
+    }
+
+    private Building GetCurrentBuilding()
+    {
+        foreach (var building in buildingList)
+        {
+            if (building == null)
+                return null;
+            if (building.helper.IsFull)
+                continue;
+            return building;
+        }
+        return null;
     }
 }
 

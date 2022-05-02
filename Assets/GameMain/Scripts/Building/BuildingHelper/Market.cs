@@ -15,7 +15,9 @@ public class Market : BuildingHelper
     }
     public override void OnAgentTick(AgentData agentData)
     {
-        Debug.Log("Enter Market");
+        // Debug.Log("Enter Market");
+        agentData.hunger += 1f * Time.deltaTime;
+        agentData.mood -= agentData.hungerDecreaseSpeed * 0.2f * Time.deltaTime;
     }
 
     public override void OnAgentEnter(AgentData agentData)

@@ -16,7 +16,10 @@ public class Factory : BuildingHelper
     }
     public override void OnAgentTick(AgentData agentData)
     {
-        Debug.Log("Enter Factory");
+        // Debug.Log("Enter Factory");
+        agentData.hunger -= agentData.hungerDecreaseSpeed * 0.5f * Time.deltaTime;
+        agentData.mood -= agentData.hungerDecreaseSpeed * 0.5f * Time.deltaTime;
+        agentData.money += 2f * Time.deltaTime;
     }
 
     public override void OnAgentEnter(AgentData agentData)
@@ -26,6 +29,6 @@ public class Factory : BuildingHelper
 
     public override void OnAgentExit(AgentData agentData)
     {
-
+        agentData.money = Mathf.Floor(agentData.money);
     }
 }

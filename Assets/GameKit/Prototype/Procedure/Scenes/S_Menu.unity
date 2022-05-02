@@ -234,6 +234,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Quit
       objectReference: {fileID: 0}
+    - target: {fileID: 8952525325960687511, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameKit.Regulator`1[[MenuRegulator, Assembly-CSharp
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}
 --- !u!224 &283948954 stripped
@@ -298,7 +302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -380,7 +384,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Untitled Game
+  m_text: Infection Simulator
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fa328c1ae3ffb6b4583cf371153b0be6, type: 2}
   m_sharedMaterial: {fileID: 21918420405216288, guid: fa328c1ae3ffb6b4583cf371153b0be6, type: 2}
@@ -762,7 +766,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8952525325960687504, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8952525325960687504, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}
       propertyPath: m_AnchorMin.x
@@ -770,7 +774,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8952525325960687504, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8952525325960687504, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}
       propertyPath: m_SizeDelta.x
@@ -810,11 +814,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8952525325960687504, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 8952525325960687504, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 8952525325960687504, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -836,10 +840,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Settings
       objectReference: {fileID: 0}
+    - target: {fileID: 8952525325960687507, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8952525325960687511, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 2067117459}
+      objectReference: {fileID: 0}
     - target: {fileID: 8952525325960687511, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ShowPanel
@@ -896,7 +904,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2067117457}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cad3576ec520dfc45b25208dac5d4e5d, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b11ee55c8b808c4c876e4e608c012b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2070778087
@@ -1072,5 +1080,17 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2067117459}
+    - target: {fileID: 8952525325960687511, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SwitchScene
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952525325960687511, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameKit.Regulator`1[[MenuRegulator, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8952525325960687511, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Main
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d328bb29688f21347b6cd955a7a75ee7, type: 3}

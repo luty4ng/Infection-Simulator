@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using PathFind;
 using GameKit;
+using UnityEngine.Profiling;
 
 public class PathFindingManager : MonoSingletonBase<PathFindingManager>
 {
@@ -24,13 +25,16 @@ public class PathFindingManager : MonoSingletonBase<PathFindingManager>
 
     private void Update()
     {
-
         if (pathRequestQueue.Count > 0)
         {
+            // Debug.Log("PathFindingManager Update");
             UpdatePathFindingGrid();
             currentPathRequest = pathRequestQueue.Dequeue();
-            List<Vector3> waypoints = pathfinding.FindWayPoints(currentPathRequest.pathStart, currentPathRequest.pathEnd, out bool success);
+            Profiler.BeginSample("PathFinding");
+            pathfinding.FindWayPoints(currentPathRequest.pathStart, currentPathRequest.pathEnd, out List<Vector3> waypoints, out bool success);
+            Profiler.EndSample();
             currentPathRequest.callback.Invoke(waypoints, success);
+
         }
     }
 

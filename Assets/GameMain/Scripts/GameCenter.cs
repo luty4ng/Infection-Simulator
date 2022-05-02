@@ -8,6 +8,10 @@ public class GameCenter : MonoSingletonBase<GameCenter>
     [Range(30, 60)] public float timePerDay = 60;
     public int currentDay = 1;
     public float currentTime = 0;
+    public Transform AgentsParent;
+    public Transform BuildingParent;
+    public Building housePrototype;
+    public AgentAI agentPrototype;
     public List<Vector2Int> unwalkblePos = new List<Vector2Int>();
     public Dictionary<BuildingHelperType, List<Building>> buildings = new Dictionary<BuildingHelperType, List<Building>>();
     public bool IsMorning
@@ -22,6 +26,19 @@ public class GameCenter : MonoSingletonBase<GameCenter>
     public bool IsNight
     {
         get { return currentTime >= 40f && currentTime < 60f; }
+    }
+
+    public Vector2 mouseClickPos
+    {
+        get
+        {
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            return new Vector2(worldPos.x, worldPos.y);
+        }
+    }
+    private void Start()
+    {
+        buildings.Add(BuildingHelperType.None, new List<Building>());
     }
     public void RegisterUnwalkable(Vector2Int pos)
     {
@@ -61,5 +78,47 @@ public class GameCenter : MonoSingletonBase<GameCenter>
             currentTime = 0;
             currentDay++;
         }
+
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            CreateInfectedAgent();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            CreateHealthyAgent();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            CreateHouse();
+        }
+    }
+
+    private void CreateHouse()
+    {
+        Building house = Instantiate(housePrototype, mouseClickPos, Quaternion.identity, BuildingParent);
+        house.gameObject.SetActive(true);
+
+        for (int i = 0; i < 9; i++)
+        {
+            AgentAI agent = Instantiate(agentPrototype, mouseClickPos, Quaternion.identity, AgentsParent);
+            agent.gameObject.SetActive(true);
+        }
+    }
+
+    private void CreateInfectedAgent()
+    {
+        AgentAI agent = Instantiate(agentPrototype, mouseClickPos, Quaternion.identity, AgentsParent);
+        agent.agentData.virusData.InfectedValue = 120;
+        agent.isInfected = true;
+        agent.gameObject.SetActive(true);
+    }
+
+    private void CreateHealthyAgent()
+    {
+        AgentAI agent = Instantiate(agentPrototype, mouseClickPos, Quaternion.identity, AgentsParent);
+        agent.agentData.virusData.InfectedValue = 120;
+        agent.isInfected = true;
+        agent.gameObject.SetActive(true);
     }
 }

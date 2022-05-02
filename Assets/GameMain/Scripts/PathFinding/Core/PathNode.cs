@@ -52,10 +52,10 @@ namespace PathFind
                 compare = hCost.CompareTo(nodeToCompare.hCost);
             return -compare;
         }
+
         public List<PathNode> GetNeighbours()
         {
             List<PathNode> neighbours = new List<PathNode>();
-
             for (int x = -1; x <= 1; x++)
             {
                 for (int y = -1; y <= 1; y++)
@@ -70,7 +70,6 @@ namespace PathFind
                         neighbours.Add(grid.GetValue(X, Y));
                 }
             }
-
             return neighbours;
         }
     }

@@ -10,6 +10,7 @@ public class BuildingIndicator : MonoBehaviour
         if (agentData != null)
         {
             agentData.OnStayBuilding();
+            image.color = agentData.entity.GetUpdatedColor();
         }
     }
 

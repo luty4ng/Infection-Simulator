@@ -79,6 +79,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: {x: 2, y: 2}
   buildingInput: {fileID: 2289138914536412400}
+  spriteRenderer: {fileID: 3881667328512931131}
   outputTrans: {fileID: 4726526321617452709}
   iconTrans: {fileID: 5205133424036154200}
   canvas: {fileID: 1563304277179047008}

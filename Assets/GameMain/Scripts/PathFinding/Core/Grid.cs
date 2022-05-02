@@ -92,6 +92,21 @@ namespace PathFind
             GetXY(worldPosition, out int x, out int y);
             return GetValue(x, y);
         }
+
+        public Vector2 Clamp(Vector2 worldPos)
+        {
+            GetXY(worldPos, out int x, out int y);
+            if (x < 0)
+                x = 3;
+            else if (x > width)
+                x = width - 3;
+            if (y < 0)
+                y = 3;
+            else if (y > height)
+                y = height - 3;
+
+            return GetWorldPosition(x, y);
+        }
     }
 }
 

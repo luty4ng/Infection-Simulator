@@ -5,63 +5,57 @@ using UnityEngine.UI;
 using DG.Tweening;
 using PathFind;
 using Fsm;
-using Timer;
+using System.Linq;
 
 public class AgentAI : MonoBehaviour
 {
     [SerializeField] private string currentState;
     [Range(3, 10f)] public float speed = 8f;
     [Range(1f, 5f)] public float detectRadius = 2;
-    [Range(1f, 5f)] public float infectRadius = 2;
     [Range(1f, 3f)] public float roamingRadius = 2;
 
     public LayerMask detectLayers;
     public Transform targetTrans;
+    public SpriteRenderer spriteRenderer;
     public bool isInfected = false;
-    public bool isDeside = false;
     public AgentData agentData;
-    [SerializeField] private List<Vector3> waypoints = new List<Vector3>();
+    private List<Vector3> waypoints = new List<Vector3>();
     private Transform lastTarget;
     private int waypointIndex;
     private StateMachine stateMachine;
     private bool isStart = false;
-    private AgentDeside deside;
+    public bool isRoaming = false;
+    public bool isGoBuilding = false;
+    private AgentRoaming roaming;
 
     private void Start()
     {
         isStart = true;
         targetTrans = lastTarget = null;
-        agentData = new AgentData(this);
         stateMachine = new StateMachine();
+        agentData = new AgentData(this, isInfected ? 80 : 0);
 
-        deside = new AgentDeside(this);
-        AgentRoaming roaming = new AgentRoaming(this);
+        roaming = new AgentRoaming(this);
         AgentGoBuilding goBuilding = new AgentGoBuilding(this);
         AgentCrazy crazy = new AgentCrazy(this);
 
-        System.Func<bool> GoToBuiding() => () => agentData.targetBuildingType != BuildingHelperType.None;
-        System.Func<bool> HasNoTarget() => () => agentData.targetBuildingType == BuildingHelperType.None;
-        System.Func<bool> Deside() => () => isDeside;
+        System.Func<bool> GoToBuiding() => () => isGoBuilding;
+        System.Func<bool> GoToRoaming() => () => isRoaming;
         System.Func<bool> CheckCrazy() => () => agentData.CheckCrazy();
 
-        stateMachine.AddTransition(deside, goBuilding, GoToBuiding());
-        stateMachine.AddTransition(roaming, deside, Deside());
-        stateMachine.AddTransition(goBuilding, roaming, HasNoTarget());
-        stateMachine.AddTransition(deside, roaming, HasNoTarget());
-        stateMachine.AddTransition(crazy, roaming, HasNoTarget());
+        stateMachine.AddTransition(roaming, goBuilding, GoToBuiding());
+        stateMachine.AddTransition(goBuilding, roaming, GoToRoaming());
         stateMachine.AddAnyTransition(crazy, CheckCrazy());
         stateMachine.SetState(roaming);
-
-
-        // if (targetTrans != null)
-        //     PathFindingManager.current.RequestPath(this.transform.position, targetTrans.position, OnPathFound);
     }
 
     private void OnEnable()
     {
-        if (isStart && targetTrans != null && agentData != null)
+
+        if (isStart && agentData != null)
         {
-            PathFindingManager.current.RequestPath(this.transform.position, targetTrans.position, OnPathFound);
+            // PathFindingManager.current.RequestPath(this.transform.position, targetTrans.position, OnPathFound);
+            ResetState();
         }
     }
 
@@ -70,15 +64,18 @@ public class AgentAI : MonoBehaviour
         stateMachine.Update();
         currentState = stateMachine.GetCurrentState().ToString();
         agentData.OnStayScene();
-        // Collider2D coll = Physics2D.OverlapCircle(this.transform.position, detectRadius, detectLayers);
-        // if (coll)
-        // {
-
-        // }
-
+        if (agentData.virusData.IsInfected)
+        {
+            Collider2D[] coll = Physics2D.OverlapCircleAll(this.transform.position, detectRadius, detectLayers);
+            for (int i = 0; i < coll.Length; i++)
+            {
+                coll[i].gameObject.GetComponent<AgentAI>().agentData.OnInfected();
+            }
+        }
+        spriteRenderer.color = GetUpdatedColor();
     }
 
-    public void ResetState() => stateMachine.SetState(deside);
+    public void ResetState() => stateMachine.SetState(roaming);
 
     public void OnPathFound(List<Vector3> newPath, bool pathSuccessful)
     {
@@ -112,6 +109,19 @@ public class AgentAI : MonoBehaviour
         }
     }
 
+    public Color GetUpdatedColor()
+    {
+        if (agentData.infectionType == InfectionType.Unidentified)
+            return new Color(0.21f, 0.85f, 0.55f, 1);
+        else if (agentData.infectionType == InfectionType.Infected)
+            return new Color(0.98f, 0.36f, 0.4f, 1);
+        else if (agentData.infectionType == InfectionType.Recovered)
+            return new Color(1f, 0.7f, 0f, 1);
+        return new Color(0.21f, 0.85f, 0.55f, 1);
+    }
+
+    public void DestroySelf() => Destroy(this.gameObject);
+
     public void OnDrawGizmos()
     {
         if (waypoints != null)
@@ -133,8 +143,6 @@ public class AgentAI : MonoBehaviour
         }
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(this.transform.position, detectRadius);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(this.transform.position, infectRadius);
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(this.transform.position, roamingRadius);
     }

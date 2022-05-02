@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public enum BuildingHelperType
 {
@@ -16,6 +17,7 @@ public class Building : MonoBehaviour
 {
     public Vector2Int size = new Vector2Int(2, 2);
     public BuildingInput buildingInput;
+    public SpriteRenderer spriteRenderer;
     public Transform outputTrans;
     public Transform iconTrans;
     public Canvas canvas;
@@ -60,6 +62,7 @@ public class Building : MonoBehaviour
             }
         }
         GameCenter.current.RegisterBuilding(buildingType, this);
+        this.transform.DOPunchScale(Vector3.one * 1.1f, 0.1f);
     }
 
     private void OnDestroy()

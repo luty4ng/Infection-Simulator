@@ -21,6 +21,9 @@ public class House : BuildingHelper
     public override void OnAgentTick(AgentData agentData)
     {
         // Debug.Log("Stay House");
+        agentData.hunger -= agentData.hungerDecreaseSpeed * 0.5f * Time.deltaTime;
+        agentData.mood += 0.2f * Time.deltaTime;
+        agentData.virusData.InfectedValue -= 1f * Time.deltaTime;
     }
 
     public override void OnAgentEnter(AgentData agentData)
